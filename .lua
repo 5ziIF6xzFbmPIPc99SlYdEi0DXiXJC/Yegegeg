@@ -1077,7 +1077,7 @@ b = {
 		CloseUI.ImageButton.MouseButton1Click:Connect(function()
 			b[1]().dialog(fo ,
 				'Do you want to <font color="#ff0000"><b>close?</b></font>',
-				'You just press <font color="#3eff00">comfirm</font> and this ui will close immediately. and <font color="#ff3200">cannot be opened again</font> until you execute it again',
+				'You just press <font color="#3eff00">confirm</font> and this ui will close immediately. and <font color="#ff3200">cannot be opened again</font> until you execute it again',
 				function()
 					local gf = b[1]().tw({
 						v = fo,
