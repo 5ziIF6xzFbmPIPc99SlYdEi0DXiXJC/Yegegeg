@@ -854,7 +854,6 @@ b = {
 		local f, g, CloseUI, patab, of, scl, KeyCloseUI, isopen = self[1]().n, {}, nil, nil, false ,nil, op.Keybind or Enum.KeyCode.LeftControl, false
 		assert(op.Title, "Window - Missing Title")
 		assert(op.Icon, "Window - Missing Icon")
-		local Subtitle = op.SubTitle or "" 
 		local fo = f("CanvasGroup", {
 			Parent = b[2](),
 			BorderSizePixel = 0,
@@ -877,48 +876,26 @@ b = {
 					PaddingLeft = UDim.new(0, 16)
 				}),
 				f("Frame", {
-	BorderSizePixel = 0,
-	BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-	Size = UDim2.new(0, 150, 0, 35),
-	BorderColor3 = Color3.fromRGB(0, 0, 0),
-	BackgroundTransparency = 1
-}, {
-	f("UIPadding", {PaddingLeft = UDim.new(0, 50)}),
-	f("UIListLayout", {
-		SortOrder = Enum.SortOrder.LayoutOrder,
-		VerticalAlignment = Enum.VerticalAlignment.Center,
-		Padding = UDim.new(0, -2)
-	}),
-	f("TextLabel", {
-		BorderSizePixel = 0,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-		TextSize = 14,
-		FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
-		TextColor3 = a.Theme[op.Theme or 'Quizzy']['Text Color'],
-		BackgroundTransparency = 1,
-		Size = UDim2.new(1, 0, 0, 16),
-		BorderColor3 = Color3.fromRGB(0, 0, 0),
-		Text = string.upper(op.Title),
-		LayoutOrder = 1,
-		Name = "MainTitle"
-	}),
-	f("TextLabel", {
-		BorderSizePixel = 0,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-		TextSize = 8,
-		FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
-		TextColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'],
-		BackgroundTransparency = 1,
-		Size = UDim2.new(1, 0, 0, 10),
-		BorderColor3 = Color3.fromRGB(0, 0, 0),
-		Text = Subtitle,
-		TextTransparency = 0.5,
-		LayoutOrder = 2,
-		Name = "SubTitle"
-	}),
-}),
+					BorderSizePixel = 0,
+					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					Size = UDim2.new(0, 80, 0, 35),
+					BorderColor3 = Color3.fromRGB(0, 0, 0),
+					BackgroundTransparency = 1
+				}, {
+					f("TextLabel", {
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 14,
+						FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
+						TextColor3 = a.Theme[op.Theme or 'Quizzy']['Text Color'],
+						BackgroundTransparency = 1,
+						Size = UDim2.new(1, 0, 1, 0),
+						BorderColor3 = Color3.fromRGB(0, 0, 0),
+						Text = string.upper(op.Title)
+					}),
+					f("UIPadding", {PaddingLeft = UDim.new(0, 50)}),
+				}),
 				f("ImageLabel", {
 					BorderSizePixel = 0,
 					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
@@ -928,58 +905,6 @@ b = {
 					BorderColor3 = Color3.fromRGB(0, 0, 0),
 					BackgroundTransparency = 1
 				}),
-			
-
--- SUBTITLE ANIMATION - ILAGAY DITO! 👇
-delay(0.5, function()
-    if Subtitle ~= "" then
-        local subtitleLabel = nil
-        -- Find the subtitle
-        for _, frame in pairs(fo.Frame:GetChildren()) do
-            if frame:IsA("Frame") then
-                local found = frame:FindFirstChild("SubTitle", true)
-                if found then
-                    subtitleLabel = found
-                    break
-                end
-            end
-        end
-        
-        if subtitleLabel then
-            -- Glowing pulse effect
-            spawn(function()
-                while subtitleLabel and subtitleLabel.Parent do
-                    b[1]().tw({
-                        v = subtitleLabel,
-                        t = 1.5,
-                        s = "Sine",
-                        d = "InOut",
-                        g = {TextTransparency = 0.2}
-                    }):Play()
-                    wait(1.5)
-                    b[1]().tw({
-                        v = subtitleLabel,
-                        t = 1.5,
-                        s = "Sine",
-                        d = "InOut",
-                        g = {TextTransparency = 0.7}
-                    }):Play()
-                    wait(1.5)
-                end
-            end)
-            
-            -- Rainbow color effect (OPTIONAL)
-            spawn(function()
-                local hue = 0
-                while subtitleLabel and subtitleLabel.Parent do
-                    hue = (hue + 1) % 360
-                    subtitleLabel.TextColor3 = Color3.fromHSV(hue / 360, 0.8, 1)
-                    wait(0.05)
-                end
-            end)
-        end
-    end
-end)
 				f("Frame", {
 					BorderSizePixel = 0,
 					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
