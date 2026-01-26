@@ -2534,5 +2534,4 @@ end
 
 		return g
 	end,
-}nd,
 }
