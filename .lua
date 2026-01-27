@@ -258,7 +258,7 @@ b = {
 						Size = UDim2.new(1, 0, 0, 50),
 						BorderColor3 = Color3.fromRGB(0, 0, 0),
 					}, {
-						{
+						f("TextLabel", {
 							BorderSizePixel = 0,
 							BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 							TextSize = 20,
@@ -883,18 +883,18 @@ b = {
 					BackgroundTransparency = 1
 				}, {
 					f("TextLabel", {
-    BorderSizePixel = 0,
-    TextXAlignment = Enum.TextXAlignment.Left,
-    BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-    TextSize = 14,
-    FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
-    TextColor3 = a.Theme[op.Theme or 'Quizzy']['Text Color'],
-    BackgroundTransparency = 1,
-    Size = UDim2.new(1, 0, 1, 0),
-    BorderColor3 = Color3.fromRGB(0, 0, 0),
-    Text = string.upper(op.Title)
-}),
--- DITO MO ILAGAY YUNG SUBTITLE:
+						BorderSizePixel = 0,
+						TextXAlignment = Enum.TextXAlignment.Left,
+						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+						TextSize = 14,
+						FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
+						TextColor3 = a.Theme[op.Theme or 'Quizzy']['Text Color'],
+						BackgroundTransparency = 1,
+						Size = UDim2.new(1, 0, 1, 0),
+						BorderColor3 = Color3.fromRGB(0, 0, 0),
+						Text = string.upper(op.Title)
+					}),
+					
 f("TextLabel", {
     BorderSizePixel = 0,
     TextXAlignment = Enum.TextXAlignment.Left,
@@ -909,7 +909,9 @@ f("TextLabel", {
     Text = op.Subtitle or "",  -- subtitle text
     Position = UDim2.new(0, 0, 0, 16)  -- para sa baba ng main title
 }),
-f("UIPadding", {PaddingLeft = UDim.new(0, 50)}),
+					
+					f("UIPadding", {PaddingLeft = UDim.new(0, 50)}),
+				}),
 				f("ImageLabel", {
 					BorderSizePixel = 0,
 					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
