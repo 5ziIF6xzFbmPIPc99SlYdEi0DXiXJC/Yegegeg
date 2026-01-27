@@ -875,43 +875,49 @@ b = {
 					PaddingTop = UDim.new(0, 7),
 					PaddingLeft = UDim.new(0, 16)
 				}),
-				f("Frame", {
-					BorderSizePixel = 0,
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					Size = UDim2.new(0, 80, 0, 35),
-					BorderColor3 = Color3.fromRGB(0, 0, 0),
-					BackgroundTransparency = 1
-				}, {
-					f("TextLabel", {
-						BorderSizePixel = 0,
-						TextXAlignment = Enum.TextXAlignment.Left,
-						BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-						TextSize = 14,
-						FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
-						TextColor3 = a.Theme[op.Theme or 'Quizzy']['Text Color'],
-						BackgroundTransparency = 1,
-						Size = UDim2.new(1, 0, 1, 0),
-						BorderColor3 = Color3.fromRGB(0, 0, 0),
-						Text = string.upper(op.Title)
-					}),
-					
-f("TextLabel", {
+f("Frame", {
     BorderSizePixel = 0,
-    TextXAlignment = Enum.TextXAlignment.Left,
     BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-    TextSize = 9,  -- mas maliit na text size
-    FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
-    TextColor3 = a.Theme[op.Theme or 'Quizzy']['Text Color'],
-    BackgroundTransparency = 1,
-    TextTransparency = 0.5,  -- 0.5 transparency
-    Size = UDim2.new(1, 0, 1, 0),
+    Size = UDim2.new(0, 200, 0, 35),
     BorderColor3 = Color3.fromRGB(0, 0, 0),
-    Text = op.Subtitle or "",  -- subtitle text
-    Position = UDim2.new(0, 0, 0, 16)  -- para sa baba ng main title
+    BackgroundTransparency = 1
+}, {
+    f("UIPadding", {PaddingLeft = UDim.new(0, 50)}),
+    f("UIListLayout", {
+        Padding = UDim.new(0, -2),
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        VerticalAlignment = Enum.VerticalAlignment.Center
+    }),
+    f("TextLabel", {
+        BorderSizePixel = 0,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        TextSize = 14,
+        FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
+        TextColor3 = a.Theme[op.Theme or 'Quizzy']['Text Color'],
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, 16),
+        AutomaticSize = Enum.AutomaticSize.Y,
+        BorderColor3 = Color3.fromRGB(0, 0, 0),
+        Text = string.upper(op.Title),
+        LayoutOrder = 1
+    }),
+    f("TextLabel", {
+        BorderSizePixel = 0,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+        TextSize = 8,
+        FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
+        TextColor3 = a.Theme[op.Theme or 'Quizzy']['Text Color'],
+        BackgroundTransparency = 1,
+        TextTransparency = 0.5,
+        Size = UDim2.new(1, 0, 0, 10),
+        AutomaticSize = Enum.AutomaticSize.Y,
+        BorderColor3 = Color3.fromRGB(0, 0, 0),
+        Text = op.Subtitle or "",
+        LayoutOrder = 2
+    })
 }),
-					
-					f("UIPadding", {PaddingLeft = UDim.new(0, 50)}),
-				}),
 				f("ImageLabel", {
 					BorderSizePixel = 0,
 					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
