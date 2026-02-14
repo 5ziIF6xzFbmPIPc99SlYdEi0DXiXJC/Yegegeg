@@ -892,7 +892,7 @@ f("Frame", {
         BorderSizePixel = 0,
         TextXAlignment = Enum.TextXAlignment.Left,
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-        TextSize = 10,
+        TextSize = 11,
         FontFace = Font.new("rbxassetid://16658237174", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
         TextColor3 = a.Theme[op.Theme or 'Quizzy']['Text Color'],
         BackgroundTransparency = 1,
