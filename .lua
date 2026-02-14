@@ -1794,257 +1794,297 @@ end
 				local selectedItem
 
 				function itemslist:Clear()
-					if not Multi then
-						for _, child in ipairs(dropdownselect.ScrollingFrame:GetChildren()) do
-							if child:IsA("Frame") then
-								child:Destroy()
-							end
-						end
-
-						selectedItem = nil
-						dropdown.Frame.TextLabel.Text = ""
-					else
-						for key in pairs(selectedValues) do
-							selectedValues[key] = nil
-						end
-
-						for _, child in ipairs(dropdownselect.ScrollingFrame:GetChildren()) do
-							if child:IsA("Frame") then
-								child:Destroy()
-							end
-						end
-
-						dropdown.Frame.TextLabel.Text = ""
-					end
-				end
-
-				function itemslist:Add(t)
-					local item = f("Frame", {
-						Parent = dropdownselect.ScrollingFrame,
-						BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Dropdown Item'],
-						BackgroundTransparency = 0.9,
-						BorderColor3 = Color3.fromRGB(0,0,0),
-						BorderSizePixel = 0,
-						Size = UDim2.new(1, 0,0, 20),
-					}, {
-						f("UICorner", {CornerRadius = UDim.new(0, 4)}),
-						f("UIPadding", {PaddingLeft = UDim.new(0, 5)}),
-						f("UIGradient", {Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(170, 170, 170))}}),
-						f("TextLabel", {
-							BackgroundColor3 = Color3.fromRGB(255,255,255),
-							BackgroundTransparency = 1,
-							BorderColor3 = Color3.fromRGB(0,0,0),
-							BorderSizePixel = 0,
-							Size = UDim2.new(1, 0,1, 0),
-							Font = Enum.Font.Gotham,
-							Text = t,
-							TextColor3 = Color3.fromRGB(255,255,255),
-							TextSize = 11,
-							TextXAlignment = Enum.TextXAlignment.Left
-						})
-					})
-
-					local clickitem = b[1]().click(item)
-					clickitem.MouseButton1Click:Connect(function()
-						b[1]().jc(clickitem, item)
-						if Multi then
-							if selectedValues[t] then
-								selectedValues[t] = nil
-								b[1]().tw({
-									v = item,
-									t = 0.15,
-									s = "Linear",
-									d = "InOut",
-									g = {BackgroundColor3 = Color3.fromRGB(88, 88, 88), BackgroundTransparency = 0.9}
-								}):Play()
-								b[1]().tw({
-									v = item.TextLabel,
-									t = 0.15,
-									s = "Linear",
-									d = "InOut",
-									g = {TextColor3 = Color3.fromRGB(255 ,255 ,255)}
-								}):Play()
-								item.TextLabel.Text = t
-								local selectedList = {}
-								for i, v in pairs(selectedValues) do
-									table.insert(selectedList, i)
-								end
-								if #selectedList > 0 then
-									dropdown.Frame.TextLabel.Text = table.concat(selectedList, ", ")
-								else
-									dropdown.Frame.TextLabel.Text = ""
-								end
-								pcall(function()
-									Callback(selectedList)
-								end)
-							else
-								b[1]().tw({
-									v = item,
-									t = 0.15,
-									s = "Linear",
-									d = "InOut",
-									g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}
-								}):Play()
-								b[1]().tw({
-									v = item.TextLabel,
-									t = 0.15,
-									s = "Linear",
-									d = "InOut",
-									g = {TextColor3 = Color3.fromRGB(0, 0, 0)}
-								}):Play()
-								selectedValues[t] = true
-								item.TextLabel.Text = t
-								local selectedList = {}
-								for i, v in pairs(selectedValues) do
-									table.insert(selectedList, i)
-								end
-								dropdown.Frame.TextLabel.Text = table.concat(selectedList, ", ")
-								pcall(function()
-									Callback(selectedList)
-								end)
-							end
-						else
-							for i,v in pairs(dropdownselect.ScrollingFrame:GetChildren()) do
-								if v:IsA("Frame") then
-									b[1]().tw({
-										v = v,
-										t = 0.15,
-										s = "Linear",
-										d = "InOut",
-										g = {BackgroundColor3 = Color3.fromRGB(88, 88, 88), BackgroundTransparency = 0.9}
-									}):Play()
-									b[1]().tw({
-										v = v.TextLabel,
-										t = 0.15,
-										s = "Linear",
-										d = "InOut",
-										g = {TextColor3 = Color3.fromRGB(255 ,255 ,255)}
-									}):Play()
-								end
-							end
-							b[1]().tw({
-								v = item,
-								t = 0.15,
-								s = "Linear",
-								d = "InOut",
-								g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}
-							}):Play()
-							b[1]().tw({
-								v = item.TextLabel,
-								t = 0.15,
-								s = "Linear",
-								d = "InOut",
-								g = {TextColor3 = Color3.fromRGB(0, 0, 0)}
-							}):Play()
-							item.TextLabel.Text = t
-							Value = t
-							dropdown.Frame.TextLabel.Text = t
-							pcall(function()
-								Callback(t)
-							end)
-						end
-					end)
-
-					local function isValueInTable(val, tbl)
-						if type(tbl) ~= "table" then
-							return false
-						end
-
-						for _, v in pairs(tbl) do
-							if v == val then
-								return true
-							end
-						end
-						return false
-					end
-
-					delay(0,function()
-						if Multi then
-							if isValueInTable(t, Value) then
-								b[1]().tw({
-									v = item,
-									t = 0.15,
-									s = "Linear",
-									d = "InOut",
-									g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}
-								}):Play()
-								b[1]().tw({
-									v = item.TextLabel,
-									t = 0.15,
-									s = "Linear",
-									d = "InOut",
-									g = {TextColor3 = Color3.fromRGB(0, 0, 0)}
-								}):Play()
-								item.TextLabel.Text = t
-								selectedValues[t] = true
-								local selectedList = {}
-								for i, v in pairs(selectedValues) do
-									table.insert(selectedList, i)
-								end
-								dropdown.Frame.TextLabel.Text = table.concat(selectedList, ", ")
-								pcall(function()
-									Callback(selectedList)
-								end)
-							end
-						else
-							if t == Value then
-								b[1]().tw({
-									v = item,
-									t = 0.15,
-									s = "Linear",
-									d = "InOut",
-									g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}
-								}):Play()
-								b[1]().tw({
-									v = item.TextLabel,
-									t = 0.15,
-									s = "Linear",
-									d = "InOut",
-									g = {TextColor3 = Color3.fromRGB(0, 0, 0)}
-								}):Play()
-								item.TextLabel.Text = t
-								Value = t
-								dropdown.Frame.TextLabel.Text = t
-								pcall(function()
-									Callback(t)
-								end)
-							end
-						end
-						dps()
-					end)
-				end
-
-				for i,v in ipairs(List) do
-					itemslist:Add(v)
-				end
-
-				dropdown.Frame.TextLabel:GetPropertyChangedSignal("Text"):Connect(function()
-					dps()
-				end)
-
-				dropdownselect.ScrollingFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-					dropdownselect.ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, dropdownselect.ScrollingFrame.UIListLayout.AbsoluteContentSize.Y + 5)
-				end)
-
-				function itemslist:SetTitle(newTitle)
-					par.TextDesc.TextLabel.Text = newTitle
-				end
-
-				function itemslist:SetDesc(newDesc)
-					local descLabel = par.TextDesc:FindFirstChild("Desc")
-					if descLabel then
-						descLabel.Text = newDesc
-					else
-						b[1]().desc(par.TextDesc, newDesc, op)
-					end
-				end
-
-				function itemslist:SetVisible(newVisible)
-					par.Visible = newVisible
-				end
-
-				return itemslist
+	if not Multi then
+		for _, child in ipairs(dropdownselect.ScrollingFrame:GetChildren()) do
+			if child:IsA("Frame") then
+				child:Destroy()
 			end
+		end
+
+		selectedItem = nil
+		dropdown.Frame.TextLabel.Text = ""
+	else
+		for key in pairs(selectedValues) do
+			selectedValues[key] = nil
+		end
+
+		for _, child in ipairs(dropdownselect.ScrollingFrame:GetChildren()) do
+			if child:IsA("Frame") then
+				child:Destroy()
+			end
+		end
+
+		dropdown.Frame.TextLabel.Text = ""
+	end
+end
+
+-- ========== NEW REMOVE FUNCTION ADDED HERE ==========
+function itemslist:Remove(t)
+	for _, child in ipairs(dropdownselect.ScrollingFrame:GetChildren()) do
+		if child:IsA("Frame") and child:FindFirstChild("TextLabel") then
+			if child.TextLabel.Text == t then
+				-- Remove from multi-select values
+				if Multi and selectedValues[t] then
+					selectedValues[t] = nil
+					local selectedList = {}
+					for i, v in pairs(selectedValues) do
+						table.insert(selectedList, i)
+					end
+					if #selectedList > 0 then
+						dropdown.Frame.TextLabel.Text = table.concat(selectedList, ", ")
+					else
+						dropdown.Frame.TextLabel.Text = ""
+					end
+					pcall(function()
+						Callback(selectedList)
+					end)
+				end
+				
+				-- Clear single select
+				if not Multi and Value == t then
+					Value = ""
+					dropdown.Frame.TextLabel.Text = ""
+					pcall(function()
+						Callback("")
+					end)
+				end
+				
+				-- Destroy the item
+				child:Destroy()
+				break
+			end
+		end
+	end
+end
+-- ========== END NEW REMOVE FUNCTION ==========
+
+function itemslist:Add(t)
+	local item = f("Frame", {
+		Parent = dropdownselect.ScrollingFrame,
+		BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Dropdown Item'],
+		BackgroundTransparency = 0.9,
+		BorderColor3 = Color3.fromRGB(0,0,0),
+		BorderSizePixel = 0,
+		Size = UDim2.new(1, 0,0, 20),
+	}, {
+		f("UICorner", {CornerRadius = UDim.new(0, 4)}),
+		f("UIPadding", {PaddingLeft = UDim.new(0, 5)}),
+		f("UIGradient", {Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(170, 170, 170))}}),
+		f("TextLabel", {
+			BackgroundColor3 = Color3.fromRGB(255,255,255),
+			BackgroundTransparency = 1,
+			BorderColor3 = Color3.fromRGB(0,0,0),
+			BorderSizePixel = 0,
+			Size = UDim2.new(1, 0,1, 0),
+			Font = Enum.Font.Gotham,
+			Text = t,
+			TextColor3 = Color3.fromRGB(255,255,255),
+			TextSize = 11,
+			TextXAlignment = Enum.TextXAlignment.Left
+		})
+	})
+
+	local clickitem = b[1]().click(item)
+	clickitem.MouseButton1Click:Connect(function()
+		b[1]().jc(clickitem, item)
+		if Multi then
+			if selectedValues[t] then
+				selectedValues[t] = nil
+				b[1]().tw({
+					v = item,
+					t = 0.15,
+					s = "Linear",
+					d = "InOut",
+					g = {BackgroundColor3 = Color3.fromRGB(88, 88, 88), BackgroundTransparency = 0.9}
+				}):Play()
+				b[1]().tw({
+					v = item.TextLabel,
+					t = 0.15,
+					s = "Linear",
+					d = "InOut",
+					g = {TextColor3 = Color3.fromRGB(255 ,255 ,255)}
+				}):Play()
+				item.TextLabel.Text = t
+				local selectedList = {}
+				for i, v in pairs(selectedValues) do
+					table.insert(selectedList, i)
+				end
+				if #selectedList > 0 then
+					dropdown.Frame.TextLabel.Text = table.concat(selectedList, ", ")
+				else
+					dropdown.Frame.TextLabel.Text = ""
+				end
+				pcall(function()
+					Callback(selectedList)
+				end)
+			else
+				b[1]().tw({
+					v = item,
+					t = 0.15,
+					s = "Linear",
+					d = "InOut",
+					g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}
+				}):Play()
+				b[1]().tw({
+					v = item.TextLabel,
+					t = 0.15,
+					s = "Linear",
+					d = "InOut",
+					g = {TextColor3 = Color3.fromRGB(0, 0, 0)}
+				}):Play()
+				selectedValues[t] = true
+				item.TextLabel.Text = t
+				local selectedList = {}
+				for i, v in pairs(selectedValues) do
+					table.insert(selectedList, i)
+				end
+				dropdown.Frame.TextLabel.Text = table.concat(selectedList, ", ")
+				pcall(function()
+					Callback(selectedList)
+				end)
+			end
+		else
+			for i,v in pairs(dropdownselect.ScrollingFrame:GetChildren()) do
+				if v:IsA("Frame") then
+					b[1]().tw({
+						v = v,
+						t = 0.15,
+						s = "Linear",
+						d = "InOut",
+						g = {BackgroundColor3 = Color3.fromRGB(88, 88, 88), BackgroundTransparency = 0.9}
+					}):Play()
+					b[1]().tw({
+						v = v.TextLabel,
+						t = 0.15,
+						s = "Linear",
+						d = "InOut",
+						g = {TextColor3 = Color3.fromRGB(255 ,255 ,255)}
+					}):Play()
+				end
+			end
+			b[1]().tw({
+				v = item,
+				t = 0.15,
+				s = "Linear",
+				d = "InOut",
+				g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}
+			}):Play()
+			b[1]().tw({
+				v = item.TextLabel,
+				t = 0.15,
+				s = "Linear",
+				d = "InOut",
+				g = {TextColor3 = Color3.fromRGB(0, 0, 0)}
+			}):Play()
+			item.TextLabel.Text = t
+			Value = t
+			dropdown.Frame.TextLabel.Text = t
+			pcall(function()
+				Callback(t)
+			end)
+		end
+	end)
+
+	local function isValueInTable(val, tbl)
+		if type(tbl) ~= "table" then
+			return false
+		end
+
+		for _, v in pairs(tbl) do
+			if v == val then
+				return true
+			end
+		end
+		return false
+	end
+
+	delay(0,function()
+		if Multi then
+			if isValueInTable(t, Value) then
+				b[1]().tw({
+					v = item,
+					t = 0.15,
+					s = "Linear",
+					d = "InOut",
+					g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}
+				}):Play()
+				b[1]().tw({
+					v = item.TextLabel,
+					t = 0.15,
+					s = "Linear",
+					d = "InOut",
+					g = {TextColor3 = Color3.fromRGB(0, 0, 0)}
+				}):Play()
+				item.TextLabel.Text = t
+				selectedValues[t] = true
+				local selectedList = {}
+				for i, v in pairs(selectedValues) do
+					table.insert(selectedList, i)
+				end
+				dropdown.Frame.TextLabel.Text = table.concat(selectedList, ", ")
+				pcall(function()
+					Callback(selectedList)
+				end)
+			end
+		else
+			if t == Value then
+				b[1]().tw({
+					v = item,
+					t = 0.15,
+					s = "Linear",
+					d = "InOut",
+					g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}
+				}):Play()
+				b[1]().tw({
+					v = item.TextLabel,
+					t = 0.15,
+					s = "Linear",
+					d = "InOut",
+					g = {TextColor3 = Color3.fromRGB(0, 0, 0)}
+				}):Play()
+				item.TextLabel.Text = t
+				Value = t
+				dropdown.Frame.TextLabel.Text = t
+				pcall(function()
+					Callback(t)
+				end)
+			end
+		end
+		dps()
+	end)
+end
+
+for i,v in ipairs(List) do
+	itemslist:Add(v)
+end
+
+dropdown.Frame.TextLabel:GetPropertyChangedSignal("Text"):Connect(function()
+	dps()
+end)
+
+dropdownselect.ScrollingFrame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	dropdownselect.ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, dropdownselect.ScrollingFrame.UIListLayout.AbsoluteContentSize.Y + 5)
+end)
+
+function itemslist:SetTitle(newTitle)
+	par.TextDesc.TextLabel.Text = newTitle
+end
+
+function itemslist:SetDesc(newDesc)
+	local descLabel = par.TextDesc:FindFirstChild("Desc")
+	if descLabel then
+		descLabel.Text = newDesc
+	else
+		b[1]().desc(par.TextDesc, newDesc, op)
+	end
+end
+
+function itemslist:SetVisible(newVisible)
+	par.Visible = newVisible
+end
+
+return itemslist
+end
 
 			function Func:CreateLabel(khgkgh)
 				assert(khgkgh.Title, "Label - Missing Title")
