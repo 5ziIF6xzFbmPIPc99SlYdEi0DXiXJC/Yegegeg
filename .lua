@@ -850,6 +850,58 @@ b = {
 		local f = b[1]().n
 		return f('ScreenGui', {Parent = not game:GetService("RunService"):IsStudio() and game:GetService("CoreGui") or game:GetService("Players").LocalPlayer.PlayerGui, ZIndexBehavior = Enum.ZIndexBehavior.Sibling})
 	end,
+	
+	
+	[3] = function()
+		local ConfigSystem = {}
+		ConfigSystem.Elements = {}
+		ConfigSystem.ConfigName = "DefaultConfig"
+		
+		function ConfigSystem:Register(key, getValue, setValue)
+			self.Elements[key] = {
+				GetValue = getValue,
+				SetValue = setValue
+			}
+		end
+		
+		function ConfigSystem:SaveConfig()
+			local HttpService = game:GetService("HttpService")
+			local config = {}
+			
+			for key, data in pairs(self.Elements) do
+				config[key] = data.GetValue()
+			end
+			
+			local json = HttpService:JSONEncode(config)
+			
+			if writefile then
+				writefile(self.ConfigName .. ".json", json)
+				return true
+			end
+			return false
+		end
+		
+		function ConfigSystem:LoadConfig()
+			local HttpService = game:GetService("HttpService")
+			
+			if readfile and isfile and isfile(self.ConfigName .. ".json") then
+				local json = readfile(self.ConfigName .. ".json")
+				local config = HttpService:JSONDecode(json)
+				
+				for key, value in pairs(config) do
+					if self.Elements[key] then
+						self.Elements[key].SetValue(value)
+					end
+				end
+				return true
+			end
+			return false
+		end
+		
+		return ConfigSystem
+	end, 
+	
+	
 	CreateWindow = function(self, op)
 		local f, g, CloseUI, patab, of, scl, KeyCloseUI, isopen = self[1]().n, {}, nil, nil, false ,nil, op.Keybind or Enum.KeyCode.LeftControl, false
 		assert(op.Title, "Window - Missing Title")
@@ -1432,23 +1484,31 @@ end
 			end)
 
 			Search.Changed:Connect(function()
-				local SearchT = string.lower(Search.Text)
-				for i,v in pairs(Scroll:GetChildren()) do
-					if v:IsA("Frame") then
-						if SearchT ~= "" and v:FindFirstChild("TextDesc") and v.TextDesc:FindFirstChild("TextLabel") then
-							if string.find(string.lower(v.TextDesc.TextLabel.Text), SearchT) then
-								v.Visible = true
-							else
-								v.Visible = false
-							end
-						else
-							v.Visible = true
-						end
+		local SearchT = string.lower(Search.Text)
+		for i,v in pairs(Scroll:GetChildren()) do
+			if v:IsA("Frame") then
+				if SearchT ~= "" and v:FindFirstChild("TextDesc") and v.TextDesc:FindFirstChild("TextLabel") then
+					if string.find(string.lower(v.TextDesc.TextLabel.Text), SearchT) then
+						v.Visible = true
+					else
+						v.Visible = false
 					end
+				else
+					v.Visible = true
 				end
-			end)
+			end
+		end
+	end)
 
-			local Func = {}
+	local Func = {}
+	
+	Func.ConfigSystem = b[3]()
+	Func.ConfigSystem.ConfigName = op.Title .. "_" .. gfjd.Title
+	
+	delay(1, function()
+		Func.ConfigSystem:LoadConfig()
+	end)
+
 
 			function Func:CreateToggle(khgkgh)
 				assert(khgkgh.Title, "Toggle - Missing Title")
@@ -1493,8 +1553,9 @@ end
 					})
 				})
 
-				local function ToggleC(Value)
-					if not Value then
+				local function ToggleC(newValue)
+	Value = newValue
+	if not Value then
 						pcall(function()
 							Callback(Value)
 						end)
@@ -1577,12 +1638,17 @@ end
 				end
 
 				function NewSet:SetValue(newValue)
-					Value = newValue
-					ToggleC(Value)
-				end
+		ToggleC(newValue)
+	end
+	
+	local Key = khgkgh.Key or khgkgh.Title
+	Func.ConfigSystem:Register(Key, 
+		function() return Value end,
+		function(val) ToggleC(val) end
+	)
 
-				return NewSet
-			end
+	return NewSet
+end
 
 			function Func:CreateDropdown(khgkgh)
 				assert(khgkgh.Title, "Dropdown - Missing Title")
@@ -2080,10 +2146,83 @@ function itemslist:SetDesc(newDesc)
 end
 
 function itemslist:SetVisible(newVisible)
-	par.Visible = newVisible
-end
+		par.Visible = newVisible
+	end
+	
 
-return itemslist
+	local Key = khgkgh.Key or khgkgh.Title
+	Func.ConfigSystem:Register(Key,
+		function() 
+			if Multi then
+				local list = {}
+				for k, v in pairs(selectedValues) do
+					table.insert(list, k)
+				end
+				return list
+			else
+				return Value
+			end
+		end,
+		function(val)
+			if Multi then
+				selectedValues = {}
+				if type(val) == "table" then
+					for _, v in ipairs(val) do
+						selectedValues[v] = true
+					end
+				end
+				local list = {}
+				for k in pairs(selectedValues) do
+					table.insert(list, k)
+				end
+				dropdown.Frame.TextLabel.Text = table.concat(list, ", ")
+				
+				for _, child in ipairs(dropdownselect.ScrollingFrame:GetChildren()) do
+					if child:IsA("Frame") and child:FindFirstChild("TextLabel") then
+						local itemText = child.TextLabel.Text
+						if selectedValues[itemText] then
+							b[1]().tw({v = child, t = 0.15, s = "Linear", d = "InOut", 
+								g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}}):Play()
+							b[1]().tw({v = child.TextLabel, t = 0.15, s = "Linear", d = "InOut", 
+								g = {TextColor3 = Color3.fromRGB(0, 0, 0)}}):Play()
+						else
+							b[1]().tw({v = child, t = 0.15, s = "Linear", d = "InOut",
+								g = {BackgroundColor3 = Color3.fromRGB(88, 88, 88), BackgroundTransparency = 0.9}}):Play()
+							b[1]().tw({v = child.TextLabel, t = 0.15, s = "Linear", d = "InOut",
+								g = {TextColor3 = Color3.fromRGB(255, 255, 255)}}):Play()
+						end
+					end
+				end
+				pcall(function()
+					Callback(list)
+				end)
+			else
+				Value = val
+				dropdown.Frame.TextLabel.Text = val
+				
+				for _, child in ipairs(dropdownselect.ScrollingFrame:GetChildren()) do
+					if child:IsA("Frame") and child:FindFirstChild("TextLabel") then
+						if child.TextLabel.Text == val then
+							b[1]().tw({v = child, t = 0.15, s = "Linear", d = "InOut",
+								g = {BackgroundColor3 = a.Theme[op.Theme or 'Quizzy']['Color Main'], BackgroundTransparency = 0}}):Play()
+							b[1]().tw({v = child.TextLabel, t = 0.15, s = "Linear", d = "InOut",
+								g = {TextColor3 = Color3.fromRGB(0, 0, 0)}}):Play()
+						else
+							b[1]().tw({v = child, t = 0.15, s = "Linear", d = "InOut",
+								g = {BackgroundColor3 = Color3.fromRGB(88, 88, 88), BackgroundTransparency = 0.9}}):Play()
+							b[1]().tw({v = child.TextLabel, t = 0.15, s = "Linear", d = "InOut",
+								g = {TextColor3 = Color3.fromRGB(255, 255, 255)}}):Play()
+						end
+					end
+				end
+				pcall(function()
+					Callback(val)
+				end)
+			end
+		end
+	)
+
+	return itemslist
 end
 
 			function Func:CreateLabel(khgkgh)
@@ -2288,11 +2427,23 @@ end
 				end
 
 				function NewSet:SetValue(newValue)
-					textbox.Frame.ValueBox.TextBox.Text = newValue
-				end
+		textbox.Frame.ValueBox.TextBox.Text = newValue
+	end
+	
+	local Key = khgkgh.Key or khgkgh.Title
+	Func.ConfigSystem:Register(Key,
+		function() return textbox.Frame.ValueBox.TextBox.Text end,
+		function(val) 
+			textbox.Frame.ValueBox.TextBox.Text = val
+			pcall(function()
+				Callback(val)
+			end)
+		end
+	)
 
-				return NewSet
-			end
+
+	return NewSet
+end
 
 			function Func:CreateSlider(khgkgh)
 				assert(khgkgh.Title, "Slider - Missing Title")
@@ -2455,11 +2606,21 @@ end
 				end
 
 				function NewSet:SetValue(newValue)
-					updateSlider(newValue)
-				end
+		updateSlider(newValue)
+	end
+	
 
-				return NewSet
-			end
+	local Key = khgkgh.Key or khgkgh.Title
+	Func.ConfigSystem:Register(Key,
+		function() return Value end,
+		function(val) 
+			Value = val
+			updateSlider(val) 
+		end
+	)
+
+	return NewSet
+end
 
 			function Func:CreateSection(khgkgh)
 				assert(khgkgh.Title, "Section - Missing Title")
