@@ -2529,20 +2529,21 @@ end
 				end
 
 				local function updateSlider(value)
-					value = math.clamp(value, Min, Max)
-					value = roundToDecimal(value, DecimalPlaces)
-					b[1]().tw({
-						v = slider.Frame.Frame,
-						t = 0.5,
-						s = "Exponential",
-						d = "Out",
-						g = {Size = UDim2.new((value - Min) / (Max - Min), 0, 1, 0)}
-					}):Play()
-					slider.TextBox.Text = tonumber(value)
-					pcall(function()
-						Callback(Value)
-					end)
-				end
+    value = math.clamp(value, Min, Max)
+    value = roundToDecimal(value, DecimalPlaces)
+    Value = value  
+    b[1]().tw({
+        v = slider.Frame.Frame,
+        t = 0.5,
+        s = "Exponential",
+        d = "Out",
+        g = {Size = UDim2.new((value - Min) / (Max - Min), 0, 1, 0)}
+    }):Play()
+    slider.TextBox.Text = tonumber(value)
+    pcall(function()
+        Callback(value)  
+    end)
+end
 
 				delay(0.5,function()
 					updateSlider(Value or 0)
